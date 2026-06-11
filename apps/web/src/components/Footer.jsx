@@ -6,9 +6,9 @@ function Footer() {
   const currentYear = new Date().getFullYear();
 
   const [contactInfo, setContactInfo] = useState({
-    phone: '+91 9742854447',
-    email: 'enquiry@learningportfoundation.org',
-    address: 'Bangalore, Karnataka, India'
+    phone: '+91 7795118447',
+    email: 'learningportfoundationtrust@gmail.com',
+    address: '65/36, 11th Main Rd, near Ganesh Temple, KEB Colony, 1st Stage, BTM 1st Stage, Bengaluru, Karnataka - 560029'
   });
 
   useEffect(() => {

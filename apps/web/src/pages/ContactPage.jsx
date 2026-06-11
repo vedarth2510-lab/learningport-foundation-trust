@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
@@ -10,32 +10,63 @@ import ContactForm from '@/components/ContactForm';
 import { Card, CardContent } from '@/components/ui/card';
 
 function ContactPage() {
+  const [contactData, setContactData] = useState({
+    phone: '+91 7795118447',
+    email: 'learningportfoundationtrust@gmail.com',
+    address: '65/36, 11th Main Rd, near Ganesh Temple, KEB Colony, 1st Stage, BTM 1st Stage, Bengaluru, Karnataka - 560029',
+    map_embed_url: '',
+    facebook_url: '#',
+    twitter_url: '#',
+    instagram_url: '#',
+    linkedin_url: '#'
+  });
+
+  useEffect(() => {
+    fetch('/api/contact')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.phone) {
+          setContactData({
+            phone: data.phone,
+            email: data.email,
+            address: data.address || `${data.city}, ${data.state}, India`,
+            map_embed_url: data.map_embed_url || '',
+            facebook_url: data.facebook_url || '#',
+            twitter_url: data.twitter_url || '#',
+            instagram_url: data.instagram_url || '#',
+            linkedin_url: data.linkedin_url || '#'
+          });
+        }
+      })
+      .catch(err => console.log('Contact API error, using default', err));
+  }, []);
+
   const contactInfo = [
     {
       icon: Phone,
       title: 'Phone',
-      details: '+91 9742854447',
-      link: 'tel:+919742854447',
+      details: contactData.phone,
+      link: `tel:${contactData.phone.replace(/\s+/g, '')}`,
     },
     {
       icon: Mail,
       title: 'Email',
-      details: 'enquiry@learningportfoundation.org',
-      link: 'mailto:enquiry@learningportfoundation.org',
+      details: contactData.email,
+      link: `mailto:${contactData.email}`,
     },
     {
       icon: MapPin,
       title: 'Location',
-      details: 'Bangalore, Karnataka, India',
+      details: contactData.address,
       link: '#',
     },
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook', color: 'hover:text-[#1877F2]' },
-    { icon: Twitter, href: '#', label: 'Twitter', color: 'hover:text-[#1DA1F2]' },
-    { icon: Instagram, href: '#', label: 'Instagram', color: 'hover:text-[#E4405F]' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn', color: 'hover:text-[#0A66C2]' },
+    { icon: Facebook, href: contactData.facebook_url, label: 'Facebook', color: 'hover:text-[#1877F2]' },
+    { icon: Twitter, href: contactData.twitter_url, label: 'Twitter', color: 'hover:text-[#1DA1F2]' },
+    { icon: Instagram, href: contactData.instagram_url, label: 'Instagram', color: 'hover:text-[#E4405F]' },
+    { icon: Linkedin, href: contactData.linkedin_url, label: 'LinkedIn', color: 'hover:text-[#0A66C2]' },
   ];
 
   return (
@@ -143,10 +174,23 @@ function ContactPage() {
                 viewport={{ once: true }}
               >
                 <h2 className="text-center mb-8">Find Us</h2>
-                <div className="bg-muted rounded-2xl overflow-hidden" style={{ height: '400px' }}>
-                  <div className="w-full h-full flex items-center justify-center">
-                    <p className="text-muted-foreground">Google Maps integration will be displayed here</p>
-                  </div>
+                <div className="bg-muted rounded-2xl overflow-hidden shadow-md" style={{ height: '400px' }}>
+                  {contactData.map_embed_url ? (
+                    <iframe
+                      title="Google Maps"
+                      src={contactData.map_embed_url}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <p className="text-muted-foreground">Google Maps integration will be displayed here</p>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </div>

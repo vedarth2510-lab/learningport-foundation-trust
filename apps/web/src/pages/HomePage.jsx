@@ -32,6 +32,11 @@ const programIconMap = {
 };
 
 function HomePage() {
+  const [contact, setContact] = useState({
+    phone: '+91 7795118447',
+    email: 'learningportfoundationtrust@gmail.com'
+  });
+
   const [banner, setBanner] = useState({
     badge: 'Registered NGO · Karnataka · Est. 2015',
     title: 'Empowering through Education, Skills & Employment',
@@ -118,6 +123,16 @@ function HomePage() {
         }
       })
       .catch(err => console.log('Testimonials API error, using fallback', err));
+
+    // 4. Fetch Contact
+    fetch('/api/contact')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.phone) {
+          setContact(data);
+        }
+      })
+      .catch(err => console.log('Contact API error', err));
   }, []);
 
   const whyUs = [
@@ -598,11 +613,11 @@ function HomePage() {
                 <motion.div {...fadeUp(0.1)} className="flex flex-col sm:flex-row gap-4 flex-shrink-0">
                   <div className="flex items-center gap-3 text-white/90">
                     <Phone className="h-5 w-5 flex-shrink-0" />
-                    <span className="font-medium">+91 9742854447</span>
+                    <span className="font-medium">{contact.phone}</span>
                   </div>
                   <div className="flex items-center gap-3 text-white/90">
                     <Mail className="h-5 w-5 flex-shrink-0" />
-                    <span className="font-medium">enquiry@learningportfoundation.org</span>
+                    <span className="font-medium">{contact.email}</span>
                   </div>
                   <Link to="/contact">
                     <Button variant="secondary" className="bg-white text-primary hover:bg-white/90 font-semibold">

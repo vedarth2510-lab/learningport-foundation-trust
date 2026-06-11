@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { supabase } from '../lib/supabase';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -29,16 +30,46 @@ function ContactForm() {
 
   const onSubmit = async (data) => {
     try {
-      const submissions = JSON.parse(localStorage.getItem('contactSubmissions') || '[]');
-      submissions.push({
-        ...data,
-        timestamp: new Date().toISOString(),
-      });
-      localStorage.setItem('contactSubmissions', JSON.stringify(submissions));
-      
+      // 1. Save submission to Supabase
+      const { error: dbError } = await supabase
+        .from('contact_submissions')
+        .insert([{
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          subject: data.subject,
+          message: data.message
+        }]);
+
+      if (dbError) throw dbError;
+
+      // 2. Fetch config to check if Web3Forms key is set
+      const { data: config } = await supabase
+        .from('contact_info')
+        .select('web3forms_key')
+        .eq('id', 1)
+        .maybeSingle();
+
+      if (config && config.web3forms_key) {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            access_key: config.web3forms_key,
+            from_name: "Learningport Website Contact Form",
+            subject: `New Message: ${data.subject}`,
+            ...data
+          })
+        });
+      }
+
       toast.success('Message sent successfully. We will get back to you soon.');
       reset();
     } catch (error) {
+      console.error('Contact submission error:', error);
       toast.error('Failed to send message. Please try again.');
     }
   };

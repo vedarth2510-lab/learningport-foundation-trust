@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import api from '../../lib/api';
 
-const blank = { phone: '', email: '', address: '', city: '', state: '', pincode: '', map_embed_url: '', facebook_url: '', twitter_url: '', instagram_url: '', linkedin_url: '', youtube_url: '' };
+const blank = { phone: '', email: '', address: '', city: '', state: '', pincode: '', map_embed_url: '', web3forms_key: '', facebook_url: '', twitter_url: '', instagram_url: '', linkedin_url: '', youtube_url: '' };
 
 export default function ContactPage() {
   const [form, setForm] = useState(blank);
@@ -45,6 +45,11 @@ export default function ContactPage() {
           <div>
             <label className="label">Google Maps Embed URL</label>
             <textarea className="input" rows={2} value={form.map_embed_url} onChange={set('map_embed_url')} placeholder="https://maps.google.com/embed?..." />
+          </div>
+          <div>
+            <label className="label">Web3Forms Access Key (for contact form email alerts)</label>
+            <input type="text" className="input" value={form.web3forms_key} onChange={set('web3forms_key')} placeholder="e.g. 1234abcd-1234-abcd-1234-abcd1234efgh" />
+            <p className="text-xs text-gray-400 mt-1">Get a free key by entering your email at <a href="https://web3forms.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline">web3forms.com</a>. Form submissions will be forwarded to the email registered with that key.</p>
           </div>
         </div>
 
