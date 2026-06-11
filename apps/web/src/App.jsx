@@ -22,6 +22,7 @@ import VolunteerPage from './pages/VolunteerPage';
 import CSRPartnershipPage from './pages/CSRPartnershipPage';
 import EventsPage from './pages/EventsPage';
 import BlogPage from './pages/BlogPage';
+import BlogDetailPage from './pages/BlogDetailPage';
 import ContactPage from './pages/ContactPage';
 import ProgramDetailPage from './pages/ProgramDetailPage';
 
@@ -51,6 +52,7 @@ function App() {
         <Route path="/csr-partnership" element={<CSRPartnershipPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:id" element={<BlogDetailPage />} />
         <Route path="/contact" element={<ContactPage />} />
       </Routes>
     </Router>
